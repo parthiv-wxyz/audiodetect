@@ -1,3 +1,13 @@
+try:
+    import spaces
+except ImportError:
+    class spaces:
+        @staticmethod
+        def GPU(fn=None, **kwargs):
+            if fn is None:
+                return lambda f: f
+            return fn
+
 import os
 import sys
 import warnings
@@ -101,6 +111,7 @@ def plot_audio_visuals(signal, sr, mfcc):
     return fig
 
 
+@spaces.GPU(duration=60)
 def analyze_audio_ui(audio_path):
     """Main processing function called by the Gradio Web Interface."""
     if audio_path is None:

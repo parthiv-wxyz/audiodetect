@@ -103,6 +103,13 @@ class DualSSLDeepfakeDetector:
         wavlm_probs = []
         xlsr_probs = []
 
+        # Ensure model is on CUDA if dynamically allocated by ZeroGPU
+        current_device = "cuda" if torch.cuda.is_available() else self.device
+        if current_device != self.device:
+            self.device = current_device
+            self.m_wavlm = self.m_wavlm.to(self.device)
+            self.m_xlsr = self.m_xlsr.to(self.device)
+
         with torch.no_grad():
             for t_start, t_end, chunk in windows:
                 timestamps.append((t_start, t_end))
